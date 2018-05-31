@@ -441,6 +441,10 @@
         "title": "Rectangular Brush"
       },
       {
+        "name": "interactive_area_brush",
+        "title": "Area Chart with Rectangular Brush"
+      },
+      {
         "name": "interactive_paintbrush",
         "title": "Paintbrush Highlight"
       },
