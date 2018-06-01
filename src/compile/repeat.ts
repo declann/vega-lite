@@ -3,6 +3,7 @@ import {Config} from '../config';
 import * as log from '../log';
 import {Repeat} from '../repeat';
 import {NormalizedRepeatSpec} from '../spec';
+import {assembleCompositionLayout} from '../toplevelprops';
 import {VgLayout} from '../vega.schema';
 import {BaseConcatModel} from './baseconcat';
 import {buildModel} from './buildmodel';
@@ -56,8 +57,7 @@ export class RepeatModel extends BaseConcatModel {
   public assembleLayout(): VgLayout {
     // TODO: allow customization
     return {
-      padding: {row: 10, column: 10},
-      offset: 10,
+      ...assembleCompositionLayout(this.layout),
       columns: this.repeat && this.repeat.column ? this.repeat.column.length : 1,
       bounds: 'full',
       align: 'all'

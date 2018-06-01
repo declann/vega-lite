@@ -1,6 +1,7 @@
 import {Config} from '../config';
 import {Resolve} from '../resolve';
 import {BaseSpec} from '../spec';
+import {CompositionLayout, extractCompositionLayout} from '../toplevelprops';
 import {keys} from '../util';
 import {VgData, VgSignal} from '../vega.schema';
 import {parseData} from './data/parse';
@@ -9,8 +10,11 @@ import {Model} from './model';
 import {RepeaterValue} from './repeater';
 
 export abstract class BaseConcatModel extends Model {
+  public readonly layout: CompositionLayout;
   constructor(spec: BaseSpec, parent: Model, parentGivenName: string, config: Config, repeater: RepeaterValue, resolve: Resolve) {
     super(spec, parent, parentGivenName, config, repeater, resolve);
+
+    this.layout = extractCompositionLayout(spec);
   }
 
   public parseData() {

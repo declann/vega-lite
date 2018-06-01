@@ -7,6 +7,8 @@ import {StackOffset} from './stack';
 import {WindowOnlyOp} from './transform';
 import {Flag, flagKeys} from './util';
 
+export {Layout as VgLayout} from 'vega';
+
 export interface VgData {
   name: string;
   source?: string;
@@ -190,33 +192,6 @@ export type ScaleInterpolate = 'rgb'| 'lab' | 'hcl' | 'hsl' | 'hsl-long' | 'hcl-
 export interface ScaleInterpolateParams {
   type: 'rgb' | 'cubehelix' | 'cubehelix-long';
   gamma?: number;
-}
-
-export type VgLayoutAlign = 'none' | 'each' | 'all';
-
-export type RowCol<T> = {
-  row?: T,
-  column?: T
-};
-
-export interface VgLayout {
-  padding: number | RowCol<number>;
-  headerBand?: number | RowCol<number>;
-  footerBand?: number | RowCol<number>;
-  offset: number | {
-    rowHeader: number,
-    rowFooter: number,
-    rowTitle: number,
-    columnHeader: number,
-    columnFooter: number,
-    columnTitle: number
-  };
-  bounds: 'full' | 'flush';
-  columns?: number | {signal: string};
-  align?: VgLayoutAlign | {
-    row: VgLayoutAlign,
-    column: VgLayoutAlign
-  };
 }
 
 export function isDataRefUnionedDomain(domain: VgDomain): domain is DataRefUnionDomain {

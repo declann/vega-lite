@@ -1,8 +1,9 @@
-import {isString} from 'vega-util';
+import {isNumber, isString} from 'vega-util';
 
 import {InlineDataset} from './data';
 import * as log from './log';
 import {Dict} from './util';
+import {VgLayout} from './vega.schema';
 
 /**
  * @minimum 0
@@ -41,6 +42,40 @@ export interface TopLevelProperties {
    * This can be an array of objects or primitive values or a string. Arrays of primitive values are ingested as objects with a `data` property.
    */
   datasets?: Datasets;
+}
+
+export interface CompositionLayout {
+  /**
+   * The spacing in pixels between elements within the composition layout.
+   * An object value of the form `{"row": number, "column": number}` can be used to supply
+   * different spacing values for rows and columns.
+   */
+  spacing?: number | {
+    row: number;
+    column: number;
+  };
+}
+
+export function extractCompositionLayout<T extends CompositionLayout>(layout: T): CompositionLayout {
+  const {spacing} = layout;
+  return {spacing};
+}
+
+export function assembleCompositionLayout(layout: CompositionLayout): VgLayout {
+  const {spacing} = layout;
+
+  if (isNumber(spacing)) {
+    return {
+      padding: {row: spacing, column: spacing},
+      offset: spacing
+    };
+  }
+
+  const {row=10,column=10} = spacing;
+  return {
+    padding: {row, column},
+    offset: 10
+  };
 }
 
 export type AutosizeType = 'pad' | 'fit' | 'none';

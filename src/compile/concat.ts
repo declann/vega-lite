@@ -1,6 +1,7 @@
 import {Config} from '../config';
 import * as log from '../log';
 import {isVConcatSpec, NormalizedConcatSpec} from '../spec';
+import {assembleCompositionLayout} from '../toplevelprops';
 import {VgLayout} from '../vega.schema';
 import {BaseConcatModel} from './baseconcat';
 import {buildModel} from './buildmodel';
@@ -41,8 +42,7 @@ export class ConcatModel extends BaseConcatModel {
   public assembleLayout(): VgLayout {
     // TODO: allow customization
     return {
-      padding: {row: 10, column: 10},
-      offset: 10,
+      ...assembleCompositionLayout(this.layout),
       ...(this.isVConcat ? {columns: 1} : {}),
       bounds: 'full',
       // Use align each so it can work with multiple plots with different size

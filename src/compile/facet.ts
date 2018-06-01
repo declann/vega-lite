@@ -1,4 +1,5 @@
-import {AggregateOp} from 'vega';
+import {AggregateOp, RowColumn} from 'vega';
+
 import {Channel, COLUMN, ROW, ScaleChannel} from '../channel';
 import {Config} from '../config';
 import {reduce} from '../encoding';
@@ -7,8 +8,9 @@ import {FieldDef, normalize, title as fieldDefTitle, vgField} from '../fielddef'
 import * as log from '../log';
 import {hasDiscreteDomain} from '../scale';
 import {NormalizedFacetSpec} from '../spec';
+import {assembleCompositionLayout, CompositionLayout, extractCompositionLayout} from '../toplevelprops';
 import {contains} from '../util';
-import {isVgRangeStep, RowCol, VgAxis, VgData, VgLayout, VgMarkGroup, VgSignal} from '../vega.schema';
+import {isVgRangeStep, VgAxis, VgData, VgLayout, VgMarkGroup, VgSignal} from '../vega.schema';
 import {assembleAxis} from './axis/assemble';
 import {buildModel} from './buildmodel';
 import {assembleFacetData} from './data/assemble';
@@ -23,6 +25,7 @@ import {assembleDomain, getFieldFromDomain} from './scale/domain';
 export class FacetModel extends ModelWithField {
   public readonly type: 'facet' = 'facet';
   public readonly facet: FacetMapping<string>;
+  public readonly layout: CompositionLayout;
 
   public readonly child: Model;
 
@@ -38,6 +41,8 @@ export class FacetModel extends ModelWithField {
     const facet: FacetMapping<string> = replaceRepeaterInFacet(spec.facet, repeater);
 
     this.facet = this.initFacet(facet);
+
+    this.layout = extractCompositionLayout(spec);
   }
 
   private initFacet(facet: FacetMapping<string>): FacetMapping<string> {
@@ -173,8 +178,8 @@ export class FacetModel extends ModelWithField {
   }
 
   private getLayoutBandMixins(headerType: 'header' | 'footer'): {
-    headerBand?: RowCol<number>,
-    footerBand?: RowCol<number>
+    headerBand?: RowColumn<number>,
+    footerBand?: RowColumn<number>
   } {
     const bandMixins = {};
 
@@ -202,12 +207,12 @@ export class FacetModel extends ModelWithField {
     // TODO: determine default align based on shared / independent scales
 
     return {
-      padding: {row: 10, column: 10},
+      // TODO: support offset for rowHeader/rowFooter/rowTitle/columnHeader/columnFooter/columnTitle
+
+      ...assembleCompositionLayout(this.layout),
       ...this.getLayoutBandMixins('header'),
       ...this.getLayoutBandMixins('footer'),
 
-      // TODO: support offset for rowHeader/rowFooter/rowTitle/columnHeader/columnFooter/columnTitle
-      offset: 10,
       columns,
       bounds: 'full',
       align: 'all'
